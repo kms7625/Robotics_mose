@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<robot name="my_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- ① 변수 정의: 값은 전부 여기서만 관리 -->
+  <xacro:property name="wheel_radius" value="0.08"/>
+  <xacro:property name="wheel_length" value="0.04"/>
+  <xacro:property name="wheel_y" value="0.17"/>
+  <xacro:property name="pi_half" value="1.5708"/>
+
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.4 0.3 0.1"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0 0 0.8 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <!-- ② 바퀴 매크로: prefix=이름 접두사, y=붙는 위치 -->
+  <xacro:macro name="wheel" params="prefix y">
+    <link name="${prefix}_wheel">
+      <visual>
+        <origin xyz="0 0 0" rpy="${pi_half} 0 0"/>
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+        </geometry>
+        <material name="black">
+          <color rgba="0 0 0 1"/>
+        </material>
+      </visual>
+    </link>
+    <joint name="${prefix}_wheel_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="${prefix}_wheel"/>
+      <origin xyz="0 ${y} 0"/>
+      <axis xyz="0 1 0"/>
+    </joint>
+  </xacro:macro>
+
+  <!-- ③ 매크로 호출: 바퀴 두 개가 이 두 줄로 끝 -->
+  <xacro:wheel prefix="left"  y="${wheel_y}"/>
+  <xacro:wheel prefix="right" y="${-wheel_y}"/>
+
+</robot>
